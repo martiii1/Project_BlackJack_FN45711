@@ -73,6 +73,7 @@ void BlackJack::savePlayerData()
 
     if (readFile.is_open())
     {
+        int tempFlag;
         std::ofstream writeFile;
         writeFile.open("tempFile.txt");
 
@@ -85,11 +86,14 @@ void BlackJack::savePlayerData()
         {
             if (writeFile.is_open())
             {
-                writeFile << ID <<" ";
+                tempFlag = ID;
+                writeFile << ID;
                 readFile.getline(tempLine, MAX_LINE_LENGTH);
                 writeFile << tempLine << '\n';
 
                 readFile >> ID;
+                if(ID == tempFlag)
+                    break;
             }
             else
             {
@@ -199,10 +203,8 @@ bool BlackJack::loadPlayer()
     token = strtok(nullptr, " ");
     if (token != nullptr)
     {
-        unsigned short int tempAge = strToInt(token);
-
-        fPlayer.newPlayer(firstName, secondName, tempAge, fID);
-        fID++;
+        std::cout << "Player not found." << std::endl;
+        return false;
     }
 
     if (findPlayer(firstName, secondName) == true)
@@ -228,9 +230,10 @@ bool BlackJack::findPlayer(char *firstName, char *secondName)
 
     char temp[MAX_LINE_LENGTH];
 
+    readFile.getline(temp, MAX_LINE_LENGTH);
     while (!readFile.eof())
     {
-        readFile.getline(temp, MAX_LINE_LENGTH);
+
 
         char *token;
         char *fName;
@@ -288,6 +291,8 @@ bool BlackJack::findPlayer(char *firstName, char *secondName)
 
             return true;
         }
+
+        readFile.getline(temp, MAX_LINE_LENGTH);
     }
 
     readFile.close();
@@ -351,9 +356,9 @@ void BlackJack::getCommands()
 
     fHit();
     std::cout <<"(Points: " << fPlayer.getCurrentScore() <<")" << std::endl;
-    bool endOfGame = false;
 
-    while(!endOfGame)
+
+    while(true)
     {
 
         std::cout << std::endl << "Hit/Stand/Probability" << std::endl;
@@ -369,7 +374,7 @@ void BlackJack::getCommands()
 
                 unsigned short int temp = fPlayer.getPlayedGames();
                 fPlayer.setPlayedGames(temp + 1);
-                endOfGame = true;
+                return;
             }
 
             if (fPlayer.getCurrentScore() == 21)
@@ -382,7 +387,7 @@ void BlackJack::getCommands()
                 fPlayer.setPlayedGames(temp + 1);
                 temp = fPlayer.getWins();
                 fPlayer.setWins(temp + 1);
-                endOfGame = true;
+                return;
             }
 
             std::cout << "(Points: " << fPlayer.getCurrentScore() << ")" << std::endl;
@@ -391,8 +396,7 @@ void BlackJack::getCommands()
         if (strcmp(tempCommand, "Stand") == 0)
         {
             fStand();
-            endOfGame= true;
-
+            return;
         }
 
         if (strcmp(tempCommand, "Probability") == 0)
@@ -400,7 +404,7 @@ void BlackJack::getCommands()
             fProbability();
         }
     }
-    return;
+
 }
 
 bool BlackJack::fHit()
