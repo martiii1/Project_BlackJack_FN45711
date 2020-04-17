@@ -11,5 +11,7 @@ int main()
 
     Game.Start();
 
+
+    int a;
     return 0;
 }
