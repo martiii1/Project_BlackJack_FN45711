@@ -7,18 +7,9 @@
 
 int main()
 {
+    BlackJack Game;
 
-
-
-    BlackJack test;
-
-    test.Start();
-
-
-
-
-
-
+    Game.Start();
 
     return 0;
 }
