@@ -119,14 +119,18 @@ void Deck::printCards() const
     }
 }
 
-void Deck::shuffleCard()
+void Deck::shuffleCard(int numberOfTimes)
 {
     srand(time(NULL));
     int randomNum = rand() % fNumberOfCards;
-    for (int i = 0; i < fNumberOfCards; i++)
+
+    for(int j=0;j<numberOfTimes;j++)
     {
-        swapCards(i, randomNum);
-        randomNum = rand() % fNumberOfCards;
+        for (int i = 0; i < fNumberOfCards; i++)
+        {
+            swapCards(i, randomNum);
+            randomNum = rand() % fNumberOfCards;
+        }
     }
 
 }

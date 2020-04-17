@@ -186,7 +186,7 @@ bool BlackJack::loadPlayer()
     token = strtok(input, " ");
     if (token == nullptr)
     {
-        std::cout << "Error!" << std::endl;
+        //std::cout << "Error!" << std::endl;
         return false;
     }
     firstName = token;
@@ -195,7 +195,7 @@ bool BlackJack::loadPlayer()
     token = strtok(nullptr, " ");
     if (token == nullptr)
     {
-        std::cout << "Error!" << std::endl;
+        //std::cout << "Error!" << std::endl;
         return false;
     }
     secondName = token;
@@ -347,7 +347,7 @@ void BlackJack::pickDeck()
 
     }
 
-    fCardDeck.shuffleCard();
+    fCardDeck.shuffleCard(5);
 }
 
 void BlackJack::getCommands()

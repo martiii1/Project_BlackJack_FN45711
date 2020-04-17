@@ -17,7 +17,7 @@ public:
     void newDefaultDeck();
     void newCustomDeck(unsigned short int sizeOfDeck, char* deckSeries);
     void printCards() const;
-    void shuffleCard();
+    void shuffleCard(int numberOfTimes);
     void swapCards(int first,int second);
     int drawCards(bool allCards);
 
