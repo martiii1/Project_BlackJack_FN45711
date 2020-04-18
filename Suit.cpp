@@ -15,7 +15,7 @@ char* ValToTxt(int val)
                                "Nine" ,
                                "Ten" ,
                                "Jack" ,
-                               "Qeen" ,
+                               "Queen" ,
                                "King" , };
 
     return valuetotxt[val];

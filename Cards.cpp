@@ -40,7 +40,7 @@ void Cards::NotDrawnCard()
     fisDrawn = false;
 }
 
-bool Cards::isItDrawn()
+bool Cards::isItDrawn() // checks if the card is already drawn
 {
     return fisDrawn;
 }
@@ -63,27 +63,29 @@ char* Cards::getCardSN() const
     return temp;
 }
 
-unsigned short int Cards::getCardPoints()
+unsigned short int Cards::getCardPoints() // returns the card points
 {
     if ((int)fCardValue >= (int)CardValue::two && (int)fCardValue <= (int)CardValue::ten)
         return (int)fCardValue;
     if ((int)fCardValue >= (int)CardValue::jack && (int)fCardValue <= (int)CardValue::king)
-        return 10; // jack,qeen,king = 10pt
+        return 10; // jack, queen, king = 10pt
     if ((int)fCardValue == (int)CardValue::ace)
         return 11;
 
 }
 
-void Cards::printName()
+void Cards::printName() // Prints the card in a readable way -> Ace of Spades
 {
     char temp[MAX_TXT_BUFFER];
-    strcpy(temp, ValToTxt((int)getCardValue()));
+
+    strcpy(temp, ValToTxt((int)getCardValue())); // converts the "Value" to words
     std::cout << temp << " of ";
-    strcpy(temp, SuitToTxt((int)getCardSuit()));
+
+    strcpy(temp, SuitToTxt((int)getCardSuit())); // converts the "Suit" to words
     std::cout << temp << "s   ";
 }
 
-void Cards::printPoints()
+void Cards::printPoints() // Prints card points
 {
     short int temp = getCardPoints();
 

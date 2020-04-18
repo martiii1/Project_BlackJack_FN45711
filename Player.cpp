@@ -83,85 +83,90 @@ void Player::setCurrentScore(unsigned short int score)
     fCurrentScore = score;
 }
 
-void Player::newPlayer(size_t newID)
+void Player::newPlayer(size_t newID) // Gets a new line and splits it into tokens. Each token is saved accordingly.
 {
-    std::cout << "Enter your two names and age. " << std::endl;
-
+    bool correctInput = false;
     char inputInfo[MAX_LINE_LENGTH];
-    std::cin.getline(inputInfo, MAX_LINE_LENGTH);
 
-    fPlayerID = newID;
-    char *token;
-    //___________________________________________		First name \/
-    token = strtok(inputInfo, " ");
-    if (token == nullptr)
+    while(!correctInput) // Doesn't continue if the input is not correct(or expected)
     {
-        std::cout << "Invalid input! " << std::endl;
-        delMem();
-        return;
+        correctInput = true;
+        std::cout << "Enter your two names and age. " << std::endl;
+
+        std::cin.getline(inputInfo, MAX_LINE_LENGTH);
+
+        fPlayerID = newID;
+        char *token;
+
+        token = strtok(inputInfo, " ");// Expects First Name
+        if (token == nullptr)
+        {
+            std::cout << "Invalid input! " << std::endl;
+            correctInput = false;
+            continue;
+        }
+        setFirstName(token);
+
+
+        token = strtok(nullptr, " ");// Expects Second Name
+        if (token == nullptr)
+        {
+            std::cout << "Invalid input! " << std::endl;
+            correctInput = false;
+            continue;
+        }
+        setSecondName(token);
+
+
+        token = strtok(nullptr, " "); // Expects Age
+        if (token == nullptr)
+        {
+            std::cout << "Invalid input! " << std::endl;
+            correctInput = false;
+            continue;
+        }
+        setAge(token);
+
+        fGamesPlayed = 0; // Zeroes the new player's games
     }
-    setFirstName(token);
 
-    //___________________________________________		Second name \/
-    token = strtok(nullptr, " ");
-
-    if (token == nullptr)
-    {
-        std::cout << "Invalid input! " << std::endl;
-        delMem();
-        return;
-    }
-    setSecondName(token);
-
-    //__________________________________________			Age		\/
-    token = strtok(nullptr, " ");
-    if (token == nullptr)
-    {
-        std::cout << "Invalid input! " << std::endl;
-        delMem();
-        return;
-    }
-    setAge(token);
-
-    fGamesPlayed = 0;
-    //__________________________________________
 }
 
-unsigned int Player::getPlayerID()
+unsigned int Player::getPlayerID() const
 {
     return fPlayerID;
 }
 
-char* Player::getFirstName()
+char* Player::getFirstName() const
 {
     return fFirstName;
 }
 
-char* Player::getSecondName()
+char* Player::getSecondName() const
 {
     return fSecondName;
 }
 
-unsigned short int Player::getWins()
+unsigned short int Player::getWins() const
 {
     return fWins;
 }
-unsigned short int Player::getAge()
+unsigned short int Player::getAge() const
 {
     return fAge;
 }
 
-float Player::getWinrate()
+float Player::getWinrate() const
 {
     return fWinrate;
 }
 
-unsigned short int Player::getCurrentScore()
+unsigned short int Player::getCurrentScore() const
 {
     return fCurrentScore;
 }
 
-unsigned int Player::strToInt(char* str)
+unsigned int Player::strToInt(char* str) // Converts char* number to integer
 {
     unsigned int number=0;
     char c;
@@ -177,7 +182,7 @@ unsigned int Player::strToInt(char* str)
     return number;
 }
 
-void Player::delMem()
+void Player::delMem() // deletes the dynamic memory
 {
     delete[] fFirstName;
     delete[] fSecondName;
@@ -186,12 +191,6 @@ void Player::delMem()
 void Player::setPlayerID(unsigned int ID)
 {
     fPlayerID = ID;
-}
-
-void Player::playAsPlayer(unsigned int ID)
-{
-
-
 }
 
 void Player::newPlayer(char *firstName, char *secondName, unsigned short age, unsigned int newID)
@@ -213,7 +212,7 @@ unsigned short Player::getPlayedGames() const
     return fGamesPlayed;
 }
 
-void Player::writeInfoToFile(std::ofstream &file)
+void Player::writeInfoToFile(std::ofstream &file) // Writes the current Player info to the file.
 {
     file << fPlayerID << " ";
     file << fFirstName << " ";

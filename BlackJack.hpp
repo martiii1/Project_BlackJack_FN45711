@@ -33,5 +33,7 @@ private:
     void fStand();
     unsigned short fDealersDraw();
 
+    void fCreateNewPlayer();
+
 
 };

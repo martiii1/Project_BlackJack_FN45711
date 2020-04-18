@@ -105,7 +105,7 @@ void Deck::newCustomDeck(unsigned short int sizeOfDeck, char* deckSeries)
 }
 
 
-void Deck::printCards() const
+void Deck::printCards() const // Test function that prints all cards in the deck
 {
     char temp[MAX_TXT_BUFFER];
     for (int i = 0; i < fNumberOfCards; i++)
@@ -119,7 +119,7 @@ void Deck::printCards() const
     }
 }
 
-void Deck::shuffleCard(int numberOfTimes)
+void Deck::shuffleCard(int numberOfTimes) // Shuffles the deck X number of time
 {
     srand(time(NULL));
     int randomNum = rand() % fNumberOfCards;
@@ -135,7 +135,7 @@ void Deck::shuffleCard(int numberOfTimes)
 
 }
 
-void Deck::swapCards(int first, int second)
+void Deck::swapCards(int first, int second) // Swaps cards on positions "first" and "second"
 {
     if(first >= 0 && first <fNumberOfCards)
         if (second >= 0 && second < fNumberOfCards)
@@ -155,20 +155,21 @@ void Deck::swapCards(int first, int second)
 }
 
 
-int Deck::drawCards(bool allCards)
+int Deck::drawCards(bool allCards) // Draws the top car (that isn't already drawn) and prints the names of
+                                  // all drawn cards(the player's hand) or newly drawn cards(dealer's hand)
 {
     for(int i=0;i<fNumberOfCards;i++)
     {
-        if(allCards)
+        if(allCards) // every drawn card
             fCards[i].printName();
 
-        if(fCards[i].isItDrawn() == false)
+        if(!fCards[i].isItDrawn()) // If the card isn't drawn
         {
-            if(!allCards)
-             fCards[i].printName();
+            if(!allCards) // only the current card that is drawn
+             fCards[i].printName(); // Prints the card
 
             fCards[i].drawCard();
-            return fCards[i].getCardPoints();
+            return fCards[i].getCardPoints(); // returns the card points
         }
 
     }
@@ -242,7 +243,7 @@ void Deck::copyDeck(const Deck& other)
     fCards = new(std::nothrow) Cards[other.fNumberOfCards];
     if (fCards == nullptr)
     {
-        std::cout << "Error while alocating data! " << std::endl;
+        std::cout << "Error while allocating data! " << std::endl;
         delDeckMem();
         return;
     }
@@ -262,7 +263,7 @@ void Deck::delDeckMem()
     delete[] fCards;
 }
 
-int Deck::suitCount(Suit cardSuit)
+int Deck::suitCount(Suit cardSuit) // This is the suit_count function form the tasks given (returns the number of cards with that Suit)
 {
     unsigned short int counter=0;
     for(int i=0;i<fNumberOfCards;i++)
@@ -275,7 +276,7 @@ int Deck::suitCount(Suit cardSuit)
     return counter;
 }
 
-int Deck::rankCounter(unsigned int points)
+int Deck::rankCounter(unsigned int points) // The rank_count function form the tasks given (returns the NOT Drawn cards with that point value)
 {
     unsigned short int counter=0;
     for(int i=0;i<fNumberOfCards;i++)
@@ -298,19 +299,7 @@ int Deck::rankCounter(unsigned int points)
     return counter;
 }
 
-int Deck::draw()
-{
-    Cards tempCard;
-
-    tempCard = fCards[0];
-    tempCard.printName();
-    for(int i=1;i<fNumberOfCards;i++)
-        swapCards(i-1,i);
-
-    return  tempCard.getCardPoints();
-}
-
-unsigned short int Deck::getUndrawnCards()
+unsigned short int Deck::getNotDrawnCards() // Returns how many cards from the deck aren't drawn.
 {
     unsigned short int counter=0;
     for(int i=0;i<fNumberOfCards;i++)

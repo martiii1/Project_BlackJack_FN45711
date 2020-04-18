@@ -41,26 +41,22 @@ void BlackJack::Start()
 
 }
 
-bool BlackJack::readPlayerData()
+bool BlackJack::readPlayerData() // displays the registered players(if there are none the function asks for a new user)
 {
     std::ifstream readPlayerFile;
-    readPlayerFile.open("Players.txt");
+    readPlayerFile.open(FILENAME);
 
-    if (!readPlayerFile.is_open())
+    if (!readPlayerFile.is_open()) // if the file can't be opened/doesn't exist the program ask for a new player
     {
-        std::cout << "There is no record of previous players. Please create a new player" << std::endl;
-
-        fPlayer.newPlayer(fID);
-        fID++;
         readPlayerFile.close();
-        return false;
+        fCreateNewPlayer(); // asks for the new player's info
+        return false; // returns false because the file wasn't found
     }
     else
     {
-        showRegisteredPlayers(readPlayerFile);
-
+        showRegisteredPlayers(readPlayerFile); // Shows a list of registered players
         readPlayerFile.close();
-        return true;
+        return true; // returns true because the file was found
     }
 
 
@@ -450,7 +446,7 @@ void BlackJack::fProbability()
     if(temp > 11)
         std::cout << 0;
     else
-        std::cout << ((float)fCardDeck.rankCounter(temp) / (float)fCardDeck.getUndrawnCards());
+        std::cout << ((float)fCardDeck.rankCounter(temp) / (float) fCardDeck.getNotDrawnCards());
 
 }
 
@@ -525,5 +521,13 @@ float BlackJack::strToFloat(char *str)
     number = number / devisor;
 
     return number;
+}
+
+void BlackJack::fCreateNewPlayer() // Gets all the information for a new player (First Name/Second Name/Age)
+{
+    std::cout << "There is no record of previous players. Please create a new player" << std::endl;
+
+    fPlayer.newPlayer(fID);// Enter the player information into the Player class
+    fID++; // Increases the player ID for the next entered player
 }
 
