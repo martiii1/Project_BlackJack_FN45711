@@ -12,34 +12,19 @@
 void BlackJack::Start()
 {
     fID = 0;
-    fAcesInHand=0;
+    fAcesInHand = 0;
 
 
-    if(!readPlayerData())
-    {
-        pickDeck();
-    }
-    else
-    {
-        if (loadPlayer())
-        {
-            pickDeck();
-        }
-        else
-        {
-            std::cout << "You can create a new player." << std::endl;
-            fPlayer.newPlayer(fID);
-            pickDeck();
-        }
-    }
+    if (readPlayerData())
+        loadPlayer(); // If previous players exist they are loaded
+
+    pickDeck();
 
     getCommands();
 
-
-
     savePlayerData();
-
 }
+
 
 bool BlackJack::readPlayerData() // displays the registered players(if there are none the function asks for a new user)
 {
@@ -62,7 +47,7 @@ bool BlackJack::readPlayerData() // displays the registered players(if there are
 
 }
 
-void BlackJack::savePlayerData()
+void BlackJack::savePlayerData() // Saves the new results to the file
 {
     std::ifstream readFile;
     readFile.open(FILENAME);
@@ -88,7 +73,7 @@ void BlackJack::savePlayerData()
                 writeFile << tempLine << '\n';
 
                 readFile >> ID;
-                if(ID == tempFlag)
+                if (ID == tempFlag)
                     break;
             }
             else
@@ -97,12 +82,12 @@ void BlackJack::savePlayerData()
             }
         }
 
-        fPlayer.setWinrate((float)fPlayer.getWins() / (float)fPlayer.getPlayedGames());
+        fPlayer.setWinrate((float) fPlayer.getWins() / (float) fPlayer.getPlayedGames());
 
         fPlayer.writeInfoToFile(writeFile);
 
 
-        readFile.ignore(MAX_LINE_LENGTH,'\n'); // Ignore This Player
+        readFile.ignore(MAX_LINE_LENGTH, '\n'); // Ignore This Player
 
         readFile.getline(tempLine, MAX_LINE_LENGTH);
         while (!readFile.eof())
@@ -128,7 +113,7 @@ void BlackJack::savePlayerData()
         }
 
 
-        std::cout << std::endl << "Player information successfully saved to the file! " << std:: endl;
+        std::cout << std::endl << "Player information successfully saved to the file! " << std::endl;
     }
     else
     {
@@ -136,7 +121,8 @@ void BlackJack::savePlayerData()
         writeFile.open(FILENAME);
         if (writeFile.is_open())
         {
-            fPlayer.writeInfoToFile(writeFile);////////////////////////////////////////////////////////////////////////////////
+            fPlayer.writeInfoToFile(
+                    writeFile);////////////////////////////////////////////////////////////////////////////////
         }
         else
         {
@@ -145,7 +131,7 @@ void BlackJack::savePlayerData()
 
 
         writeFile.close();
-        std::cout << std::endl << "Player information successfully saved to the file! " << std:: endl;
+        std::cout << std::endl << "Player information successfully saved to the file! " << std::endl;
     }
 }
 
@@ -158,7 +144,7 @@ void BlackJack::showRegisteredPlayers(std::ifstream &file)
         file >> tempBuffer; // First name
         std::cout << tempBuffer << "  ";
         file >> tempBuffer; // Second name
-        std::cout << tempBuffer <<"  ";
+        std::cout << tempBuffer << "  ";
         file >> tempBuffer; // wins
         std::cout << tempBuffer << "  ";
         file >> tempBuffer; // winrate
@@ -168,55 +154,87 @@ void BlackJack::showRegisteredPlayers(std::ifstream &file)
     }
 }
 
-bool BlackJack::loadPlayer()
+void BlackJack::loadPlayer() // load existing player of registers a new one
 {
     char *token;
     char *firstName;
     char *secondName;
-
     char input[MAX_LINE_LENGTH];
-    std::cout << "Choose a player or enter a new one." << std::endl;
-    std::cin.getline(input, MAX_LINE_LENGTH);
+    bool correctInput = false;
 
-
-    token = strtok(input, " ");
-    if (token == nullptr)
+    while (!correctInput)
     {
-        //std::cout << "Error!" << std::endl;
-        return false;
-    }
-    firstName = token;
+        std::cout << "Choose a player or enter a new one." << std::endl;
+        std::cin.getline(input, MAX_LINE_LENGTH);
 
+        correctInput = true;
 
-    token = strtok(nullptr, " ");
-    if (token == nullptr)
-    {
-        //std::cout << "Error!" << std::endl;
-        return false;
-    }
-    secondName = token;
+        token = strtok(input, " ");
+        if (token == nullptr)
+            correctInput = false;
 
-    token = strtok(nullptr, " ");
-    if (token != nullptr)
-    {
-        std::cout << "Player not found." << std::endl;
-        return false;
-    }
+        firstName = token;
 
-    if (findPlayer(firstName, secondName) == true)
-    {
-        return true;
-    }
-    else
-    {
-        std::cout << "Player not found." << std::endl;
-        return false;
+        token = strtok(nullptr, " ");
+        if (token == nullptr)
+            correctInput = false;
+
+        secondName = token;
+
+        token = strtok(nullptr, " ");
+        if (token != nullptr)                                   // if there is something more than 2 names written.
+        {
+            unsigned short int tempNum;
+            if ((token[0] >= '1' && token[0] <= '8') && (token[1] >= '0' && token[1] <= '9') && (strlen(token) == 2) )
+            {
+                tempNum = strToInt(token);
+            }
+            else
+            {
+                correctInput = false;
+                continue;
+            }
+
+            if (tempNum >= 18 && tempNum <= 90)                   // if the input is correct the new user is added.
+            {
+                fCreateNewPlayer(firstName, secondName, tempNum, fID);
+                break;
+            }
+            else if (tempNum < 18 || tempNum > 90)               // Wrong age.
+            {
+                std::cout << "Inappropriate age. Try again..." << std::endl;
+                correctInput = false;
+                continue;
+            }
+            // Unknown input.
+
+            std::cout << "Invalid input. Try again..." << std::endl;
+            correctInput = false;
+
+            std::cout << "Choose a player or enter a new one" << std::endl;
+            std::cin.getline(input, MAX_LINE_LENGTH);
+
+            continue;
+        }
+
+        // Searching for the two names
+        if (findPlayer(firstName, secondName))                  // If found the player is loaded in
+        {
+            break;                                              // Player found
+        }
+        else
+        {
+            std::cout << "Player not found." << std::endl;      // Player NOT found
+            correctInput = false;
+        }
+        // End of while
     }
 
 }
 
-bool BlackJack::findPlayer(char *firstName, char *secondName)
-{
+bool BlackJack::findPlayer(char *firstName,
+                           char *secondName) // Searches if the player with the names(as parameters) is a previous player
+{                                                             // if true it loads the player info in the class Player
     std::ifstream readFile(FILENAME);
     if (!readFile.is_open())
     {
@@ -227,15 +245,14 @@ bool BlackJack::findPlayer(char *firstName, char *secondName)
     char temp[MAX_LINE_LENGTH];
 
     readFile.getline(temp, MAX_LINE_LENGTH);
+
+    char *token;
+    char *fName;
+    char *sName;
+    unsigned int tempID;
+
     while (!readFile.eof())
     {
-
-
-        char *token;
-        char *fName;
-        char *sName;
-        unsigned int tempID;
-
         token = strtok(temp, " ");
         tempID = strToInt(token);
 
@@ -257,7 +274,7 @@ bool BlackJack::findPlayer(char *firstName, char *secondName)
         sName = token;
 
 
-        if (strcmp(fName, firstName) == 0 && strcmp(sName, secondName) == 0)
+        if (strcmp(fName, firstName) == 0 && strcmp(sName, secondName) == 0) // if found the player info is loaded in
         {
             std::cout << "You will play as: " << fName << " " << sName << ". ";
             fPlayer.setFirstName(fName);
@@ -280,8 +297,6 @@ bool BlackJack::findPlayer(char *firstName, char *secondName)
             token = strtok(nullptr, " ");
             tempNum = strToInt(token);
             fPlayer.setPlayedGames(tempNum);
-            
-
 
             readFile.close();
 
@@ -323,11 +338,12 @@ void BlackJack::pickDeck()
     {
         while (deckSize < 52)
         {
-            std::cout << std::endl << "  You can't play with less then one deck of cards! Enter another size: ";
+            std::cout << std::endl << "You can't play with less then one deck of cards! Enter another size: ";
             std::cin >> deckSize;
         }
     }
-    else if (deckSize == 52)
+
+    if (deckSize == 52)
     {
         fCardDeck.newDefaultDeck();
     }
@@ -337,9 +353,9 @@ void BlackJack::pickDeck()
         char tempDeckSeries[MAX_DECK_SERIALNUMBER_LENGHT];
 
         std::cin.get();
-        std::cin.getline(tempDeckSeries,MAX_DECK_SERIALNUMBER_LENGHT);
+        std::cin.getline(tempDeckSeries, MAX_DECK_SERIALNUMBER_LENGHT);
 
-        fCardDeck.newCustomDeck(deckSize,tempDeckSeries);
+        fCardDeck.newCustomDeck(deckSize, tempDeckSeries);
 
     }
 
@@ -350,17 +366,17 @@ void BlackJack::getCommands()
 {
     char tempCommand[MAX_COMMAND_LENGTH];
 
-    fHit();
-    std::cout <<"(Points: " << fPlayer.getCurrentScore() <<")" << std::endl;
+    fHit(); // The game starts with
+    std::cout << "(Points: " << fPlayer.getCurrentScore() << ")" << std::endl;
 
 
-    while(true)
+    while (true) // while the game ends through a break point
     {
 
         std::cout << std::endl << "Hit/Stand/Probability" << std::endl;
         std::cin >> tempCommand;
 
-        if (strcmp(tempCommand, "Hit") == 0)
+        if ((strcmp(tempCommand, "Hit") == 0) || (strcmp(tempCommand, "hit") == 0))
         {
             if (fHit() == false)
             {
@@ -370,29 +386,30 @@ void BlackJack::getCommands()
 
                 unsigned short int temp = fPlayer.getPlayedGames();
                 fPlayer.setPlayedGames(temp + 1);
-                return;
+                break;
             }
 
             if (fPlayer.getCurrentScore() == 21)
             {
                 std::cout << "(Points: " << fPlayer.getCurrentScore() << ")" << std::endl;
-
                 std::cout << "You won!" << std::endl;
 
                 unsigned short int temp = fPlayer.getPlayedGames();
                 fPlayer.setPlayedGames(temp + 1);
                 temp = fPlayer.getWins();
                 fPlayer.setWins(temp + 1);
-                return;
+                break;
             }
 
             std::cout << "(Points: " << fPlayer.getCurrentScore() << ")" << std::endl;
+
+            continue;
         }
 
-        if (strcmp(tempCommand, "Stand") == 0)
+        if ((strcmp(tempCommand, "Stand") == 0) || (strcmp(tempCommand, "stand") == 0))
         {
             fStand();
-            return;
+            break;
         }
 
         if (strcmp(tempCommand, "Probability") == 0)
@@ -403,22 +420,22 @@ void BlackJack::getCommands()
 
 }
 
-bool BlackJack::fHit()
+bool BlackJack::fHit() // Draws a new card, checks the points(returns false if the game is lost)
 {
     unsigned short int cardPoints;
     unsigned short int tempPoints = fPlayer.getCurrentScore();
     cardPoints = fCardDeck.drawCards(true);
 
-    if(cardPoints == 11)
+    if (cardPoints == 11) // counts the aces in the hand
         fAcesInHand++;
 
     tempPoints = tempPoints + cardPoints;
 
     if (tempPoints > 21)
     {
-        while(fAcesInHand != 0)
+        while (fAcesInHand != 0) // converts ace form 11 to 1 point if the score is > 21
         {
-            if(tempPoints > 21)
+            if (tempPoints > 21)
             {
                 tempPoints -= 10;// counting an ace for 1 rather then 11
                 fAcesInHand--;
@@ -429,7 +446,7 @@ bool BlackJack::fHit()
             }
         }
 
-        if(tempPoints > 21)
+        if (tempPoints > 21)
         {
             fPlayer.setCurrentScore(tempPoints);
             return false;
@@ -442,21 +459,21 @@ bool BlackJack::fHit()
 
 void BlackJack::fProbability()
 {
-    unsigned short int temp = 21-fPlayer.getCurrentScore();
-    if(temp > 11)
+    unsigned short int temp = 21 - fPlayer.getCurrentScore();
+    if (temp > 11)
         std::cout << 0;
     else
-        std::cout << ((float)fCardDeck.rankCounter(temp) / (float) fCardDeck.getNotDrawnCards());
+        std::cout << ((float) fCardDeck.rankCounter(temp) / (float) fCardDeck.getNotDrawnCards());
 
 }
 
 void BlackJack::fStand()
 {
-    unsigned  short int dealer;
+    unsigned short int dealer;
     std::cout << "The dealer's draw: ";
     dealer = fDealersDraw();
 
-    if(dealer <= fPlayer.getCurrentScore() || dealer > 21)
+    if (dealer <= fPlayer.getCurrentScore() || dealer > 21)
     {
         std::cout << "You win!" << std::endl;
         fPlayer.setWins(fPlayer.getWins() + 1);
@@ -480,23 +497,23 @@ unsigned short BlackJack::fDealersDraw()
     unsigned short int cardPoints;
 
 
-    while(dealerPoints <= 17)
+    while (dealerPoints <= 17)
     {
         cardPoints = fCardDeck.drawCards(false);
-        if(cardPoints == 11)
+        if (cardPoints == 11)
             fAcesInHand++;
 
         dealerPoints = dealerPoints + cardPoints;
 
-        while(fAcesInHand != 0 && dealerPoints >17)
+        while (fAcesInHand != 0 && dealerPoints > 17)
         {
-                dealerPoints -= 10; // counting an ace for 1 rather then 11
-                fAcesInHand--;
+            dealerPoints -= 10; // counting an ace for 1 rather then 11
+            fAcesInHand--;
         }
 
     }
 
-    std::cout <<" (Points: " << dealerPoints <<")" <<std::endl;
+    std::cout << " (Points: " << dealerPoints << ")" << std::endl;
     return dealerPoints;
 }
 
@@ -512,7 +529,7 @@ float BlackJack::strToFloat(char *str)
     for (int i = counter - 1; i >= 0; i--)
     {
         multiplier *= 10;
-        if(str[i] == '.')
+        if (str[i] == '.')
             devisor = multiplier;
         else
             number += (str[i] - '0') * multiplier;
@@ -525,9 +542,15 @@ float BlackJack::strToFloat(char *str)
 
 void BlackJack::fCreateNewPlayer() // Gets all the information for a new player (First Name/Second Name/Age)
 {
-    std::cout << "There is no record of previous players. Please create a new player" << std::endl;
+    std::cout << "Creating a new player. Enter your two names and age." << std::endl;
 
     fPlayer.newPlayer(fID);// Enter the player information into the Player class
+    fID++; // Increases the player ID for the next entered player
+}
+
+void BlackJack::fCreateNewPlayer(char *firstName, char *secondName, unsigned short int age, unsigned int id)
+{
+    fPlayer.newPlayer(firstName, secondName, age, fID);// Enter the player information into the Player class
     fID++; // Increases the player ID for the next entered player
 }
 

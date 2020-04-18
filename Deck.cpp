@@ -2,7 +2,7 @@
 #include<iostream>
 #include "Cards.hpp"
 #include "Suit.hpp"
-#include <time.h>
+#include <ctime>
 
 #pragma warning(disable:4996)
 #define MAX_TXT_BUFFER 8
@@ -37,21 +37,21 @@ Deck& Deck::operator=(const Deck& other)
     return *this;
 }
 
-void Deck::newDefaultDeck()
+void Deck::newDefaultDeck() // Creates a new deck with 52 Cards and series = "Default"
 {
     newCustomDeck(52, "Default");
 
 }
 
-void Deck::newCustomDeck(unsigned short int sizeOfDeck, char* deckSeries)
+void Deck::newCustomDeck(unsigned short int sizeOfDeck, char* deckSeries) // Creates a deck with custom length and series
 {
-    if(strcmp(deckSeries,"") == 0)
+    if(strcmp(deckSeries,"") == 0) //if the the custom series is empty it is set to "Custom"
         strcpy(deckSeries,"Custom");
 
-    if (strlen(deckSeries) > MAX_DECK_SERIALNUMBER_LENGHT)
+    if (strlen(deckSeries) > MAX_DECK_SERIALNUMBER_LENGHT) //if the the custom series too long it is set to "Custom"
     {
-        std::cout << "Deck series too long! " << std::endl;
-        return;
+        std::cout << "Deck series too long! Setting it automatically to \"Custom\" " << std::endl;
+        strcpy(deckSeries,"Custom");
     }
 
     fNumberOfCards = sizeOfDeck;
@@ -67,10 +67,10 @@ void Deck::newCustomDeck(unsigned short int sizeOfDeck, char* deckSeries)
     size_t counter = 0;
     char tempCardSN[MAX_CARD_SERIALNUMBER_LENGHT];
     strcpy(tempCardSN, fDeckSerialNumber);
-    strcat(tempCardSN, newSerialNumber());
+    strcat(tempCardSN, newSerialNumber()); // every call gets a unique card ID
 
     size_t maxRepeatsPerCard = (sizeOfDeck - 1) / 52 + 1;
-    bool flag = false;
+    bool flag = false; // when the desired number of cards is reached
 
     for (int i = 0; i < maxRepeatsPerCard; i++)
     {
@@ -118,6 +118,20 @@ void Deck::printCards() const // Test function that prints all cards in the deck
         std::cout << std::endl;
     }
 }
+
+
+int Deck::draw() // This is the suit_count function form the tasks given. The drawn card is put on the end of the deck.
+{
+    Cards tempCard;
+
+    tempCard = fCards[0];
+    tempCard.printName();
+    for(int i=1;i<fNumberOfCards;i++)
+        swapCards(i-1,i);
+
+    return  tempCard.getCardPoints();
+}
+
 
 void Deck::shuffleCard(int numberOfTimes) // Shuffles the deck X number of time
 {
@@ -178,7 +192,7 @@ int Deck::drawCards(bool allCards) // Draws the top car (that isn't already draw
 
 
 
-char* Deck::newSerialNumber()
+char* Deck::newSerialNumber() // every call gets a unique card ID
 {
     static char serialCreator[6] = { 'a','a','a','a','a' };
 
