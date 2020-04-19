@@ -13,14 +13,14 @@ public:
     void drawCard();
     void NotDrawnCard();
 
-    bool isItDrawn(); // checks if the card is already drawn
+    bool isItDrawn() const; // checks if the card is already drawn
     Suit getCardSuit() const;
     CardValue getCardValue() const;
     char* getCardSN() const;
     unsigned short int getCardPoints(); // returns the card points
 
 
-    void printName(); // Prints the card in a readable way -> Ace of Spades
+    void printName() const; // Prints the card in a readable way -> Ace of Spades
     void printPoints(); // Prints card points
 private:
     Suit fCardSuit;

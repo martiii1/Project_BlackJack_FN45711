@@ -26,7 +26,7 @@ enum class CardValue
     nine,
     ten,
     jack,
-    qeen,
+    queen,
     king
 
 };

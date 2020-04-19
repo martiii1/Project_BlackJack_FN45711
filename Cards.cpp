@@ -39,7 +39,7 @@ void Cards::NotDrawnCard()
     fisDrawn = false;
 }
 
-bool Cards::isItDrawn() // checks if the card is already drawn
+bool Cards::isItDrawn() const // checks if the card is already drawn
 {
     return fisDrawn;
 }
@@ -73,7 +73,7 @@ unsigned short int Cards::getCardPoints() // returns the card points
 
 }
 
-void Cards::printName() // Prints the card in a readable way -> Ace of Spades
+void Cards::printName() const // Prints the card in a readable way -> Ace of Spades
 {
     char temp[MAX_TXT_BUFFER];
 
