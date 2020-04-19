@@ -1,9 +1,6 @@
-#include <iostream>
-#include<ctime>
-#include <fstream>
 #include "BlackJack.hpp"
-#pragma warning(disable:4996)
 
+//Github repo https://github.com/martiii1/Project_BlackJack_FN45711
 
 int main()
 {
