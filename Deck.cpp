@@ -1,7 +1,5 @@
 #include "Deck.hpp"
 #include<iostream>
-#include "Cards.hpp"
-#include "Suit.hpp"
 #include <ctime>
 
 #pragma warning(disable:4996)

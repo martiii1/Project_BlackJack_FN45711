@@ -1,6 +1,6 @@
 #pragma once
-char* ValToTxt(int val);
 
+char* ValToTxt(int val);
 char* SuitToTxt(int val);
 
 enum class Suit

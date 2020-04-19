@@ -1,4 +1,4 @@
-#include "Suit.hpp"
+#include "CardInformation.hpp"
 
 
 char* ValToTxt(int val)

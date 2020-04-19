@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Suit.hpp"
+#include "CardInformation.hpp"
+
 #define MAX_CARD_SERIALNUMBER_LENGHT 15
 class Cards
 {

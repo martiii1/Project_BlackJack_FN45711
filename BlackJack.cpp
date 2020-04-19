@@ -1,5 +1,4 @@
 #include "BlackJack.hpp"
-#include "Player.hpp"
 #include <fstream>
 #include <iostream>
 #include <cstring>
@@ -7,7 +6,7 @@
 #define MAX_LINE_LENGTH 50
 #define MAX_COMMAND_LENGTH 12
 
-#define FILENAME "Players.txt"
+#define FILENAME "Players.txt" // The name of the file with the users
 
 void BlackJack::Start()
 {
