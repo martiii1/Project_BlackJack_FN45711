@@ -174,13 +174,13 @@ int Deck::drawCards(bool allCards) // Draws the top car (that isn't already draw
 {
     for(int i=0;i<fNumberOfCards;i++)
     {
-        if(allCards) // every drawn card
+        if(allCards)                           // every drawn card
             fCards[i].printName();
 
-        if(!fCards[i].isItDrawn()) // If the card isn't drawn
+        if(!fCards[i].isItDrawn())             // If the card isn't drawn
         {
-            if(!allCards) // only the current card that is drawn
-             fCards[i].printName(); // Prints the card
+            if(!allCards)                      // only the current card that is drawn
+             fCards[i].printName();            // Prints the card
 
             fCards[i].drawCard();
             return fCards[i].getCardPoints(); // returns the card points

@@ -121,8 +121,7 @@ void BlackJack::savePlayerData() // Saves the new results to the file
         writeFile.open(FILENAME);
         if (writeFile.is_open())
         {
-            fPlayer.writeInfoToFile(
-                    writeFile);////////////////////////////////////////////////////////////////////////////////
+            fPlayer.writeInfoToFile(writeFile);
         }
         else
         {
@@ -171,13 +170,19 @@ void BlackJack::loadPlayer() // load existing player of registers a new one
 
         token = strtok(input, " ");
         if (token == nullptr)
+        {
             correctInput = false;
+            continue;
+        }
 
         firstName = token;
 
         token = strtok(nullptr, " ");
         if (token == nullptr)
+        {
             correctInput = false;
+            continue;
+        }
 
         secondName = token;
 
@@ -232,8 +237,7 @@ void BlackJack::loadPlayer() // load existing player of registers a new one
 
 }
 
-bool BlackJack::findPlayer(char *firstName,
-                           char *secondName) // Searches if the player with the names(as parameters) is a previous player
+bool BlackJack::findPlayer(char *firstName,char *secondName) // Searches if the player with the names(as parameters) is a previous player
 {                                                             // if true it loads the player info in the class Player
     std::ifstream readFile(FILENAME);
     if (!readFile.is_open())
@@ -366,7 +370,8 @@ void BlackJack::getCommands()
 {
     char tempCommand[MAX_COMMAND_LENGTH];
 
-    fHit(); // The game starts with
+    std::cout << std::endl;
+    fHit(); // The game starts with 1 automatically drawn card
     std::cout << "(Points: " << fPlayer.getCurrentScore() << ")" << std::endl;
 
 
