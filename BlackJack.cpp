@@ -163,7 +163,7 @@ void BlackJack::loadPlayer() // load existing player of registers a new one
 
     while (!correctInput)
     {
-        std::cout << "Choose a player or enter a new one." << std::endl;
+        std::cout << "Choose a player or enter a new one(two names and age)." << std::endl;
         std::cin.getline(input, MAX_LINE_LENGTH);
 
         correctInput = true;
@@ -216,7 +216,7 @@ void BlackJack::loadPlayer() // load existing player of registers a new one
             std::cout << "Invalid input. Try again..." << std::endl;
             correctInput = false;
 
-            std::cout << "Choose a player or enter a new one" << std::endl;
+            std::cout << "Choose a player or enter a new one(two names and age)." << std::endl;
             std::cin.getline(input, MAX_LINE_LENGTH);
 
             continue;
